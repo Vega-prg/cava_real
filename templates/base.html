@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CAVA REAL - Licorería Premium{% endblock %}</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Estilos personalizados -->
+    <style>
+        :root {
+            --cava-red: #e53e3e;
+            --cava-dark-red: #c53030;
+            --cava-darker-red: #8b2424;
+            --cava-gold: #ffd700;
+            --cava-dark: #1a1a1a;
+            --cava-gray: #f8f9fa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        /* Header Styles */
+        .top-header {
+            background: var(--cava-darker-red);
+            color: white;
+            padding: 8px 0;
+            font-size: 14px;
+        }
+
+        .main-header {
+            background: linear-gradient(135deg, var(--cava-red), var(--cava-dark-red));
+            padding: 15px 0;
+            box-shadow: 0 4px 20px rgba(229, 62, 62, 0.3);
+        }
+
+        .logo {
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-decoration: none;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .logo::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 8px,
+                rgba(255, 215, 0, 0.5) 8px,
+                rgba(255, 215, 0, 0.5) 12px
+            );
+        }
+
+        .logo:hover {
+            color: var(--cava-gold);
+            text-decoration: none;
+        }
+
+        .search-bar {
+            max-width: 500px;
+            position: relative;
+        }
+
+        .search-input {
+            border-radius: 25px;
+            border: none;
+            padding: 12px 50px 12px 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            font-size: 16px;
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--cava-gold);
+            color: var(--cava-dark);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .search-btn:hover {
+            background: #ffed4e;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .header-icons {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .header-icon {
+            color: white;
+            font-size: 1.5rem;
+            text-decoration: none;
+            position: relative;
+            transition: all 0.3s ease;
+            padding: 10px;
+            border-radius: 50%;
+        }
+
+        .header-icon:hover {
+            color: var(--cava-gold);
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--cava-gold);
+            color: var(--cava-dark);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        /* Navigation Styles */
+        .main-nav {
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 0;
+            border-bottom: 3px solid var(--cava-gold);
+        }
+
+        .nav-link {
+            color: white !important;
+            font-weight: 500;
+            padding: 15px 20px !important;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            color: var(--cava-gold) !important;
+            background: rgba(229, 62, 62, 0.1);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 3px;
+            background: var(--cava-gold);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 80%;
+        }
+
+        .dropdown-menu {
+            background: var(--cava-dark);
+            border: 1px solid var(--cava-red);
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .dropdown-item {
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-item:hover {
+            background: var(--cava-red);
+            color: white;
+        }
+
+        /* User Menu Styles */
+        .user-menu {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            padding: 8px 15px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .user-menu:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--cava-gold);
+        }
+
+        /* Content Styles */
+        .main-content {
+            min-height: calc(100vh - 300px);
+            padding: 40px 0;
+        }
+
+        /* Messages Styles */
+        .alert {
+            border-radius: 15px;
+            border: none;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+
+        .alert-error {
+            background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+            color: #721c24;
+            border-left: 4px solid #dc3545;
+        }
+
+        /* Footer Styles */
+        .footer {
+            background: linear-gradient(135deg, var(--cava-dark), #2c2c2c);
+            color: white;
+            padding: 40px 0 20px;
+            margin-top: 60px;
+        }
+
+        .footer-section h5 {
+            color: var(--cava-gold);
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .footer-link {
+            color: #ccc;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            display: block;
+            padding: 5px 0;
+        }
+
+        .footer-link:hover {
+            color: var(--cava-gold);
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-icon {
+            color: white;
+            font-size: 1.5rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--cava-red);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-icon:hover {
+            background: var(--cava-gold);
+            color: var(--cava-dark);
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #444;
+            margin-top: 30px;
+            padding-top: 20px;
+            text-align: center;
+            color: #999;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .logo {
+                font-size: 1.8rem;
+            }
+
+            .search-bar {
+                margin: 15px 0;
+            }
+
+            .header-icons {
+                justify-content: center;
+                margin-top: 10px;
+            }
+
+            .main-nav .navbar-nav {
+                text-align: center;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--cava-red), var(--cava-gold), var(--cava-red));
+            background-size: 200% 100%;
+            animation: loading 2s linear infinite;
+            z-index: 9999;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .loading.active {
+            opacity: 1;
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Loading Bar -->
+    <div class="loading" id="loadingBar"></div>
+
+    <!-- Top Header -->
+    <div class="top-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <small><i class="fas fa-truck me-2"></i>Envío gratis en compras mayores a S/ 100</small>
+                </div>
+                <div class="col-md-6 text-end">
+                    <small><i class="fas fa-phone me-2"></i>+51 123 456 789</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Header -->
+    <header class="main-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-3 col-md-4">
+                    <a href="{% url 'inicio' %}" class="logo">CAVA REAL</a>
+                </div>
+                
+                <div class="col-lg-6 col-md-4">
+                    <div class="search-bar mx-auto">
+                        <form class="position-relative">
+                            <input type="text" class="form-control search-input" placeholder="Buscar productos, marcas...">
+                            <button type="submit" class="search-btn">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-4">
+                    <div class="header-icons justify-content-end">
+                        {% if user.is_authenticated %}
+                            <div class="dropdown">
+                                <a href="#" class="user-menu dropdown-toggle" data-bs-toggle="dropdown">
+                                    <i class="fas fa-user me-2"></i>{{ user.nombre|default:user.username }}
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Mi Perfil</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-box me-2"></i>Mis Pedidos</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fas fa-heart me-2"></i>Favoritos</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form action="{% url 'logout' %}" method="post" class="d-inline w-100">
+                                            {% csrf_token %}
+                                            <button type="submit" class="dropdown-item">
+                                                <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+                                            </button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        {% else %}
+                            <a href="{% url 'login' %}" class="header-icon">
+                                <i class="fas fa-sign-in-alt"></i>
+                            </a>
+                        {% endif %}
+                        
+                        <a href="#" class="header-icon">
+                            <i class="fas fa-heart"></i>
+                            <span class="cart-count">0</span>
+                        </a>
+                        
+                        <a href="{% url 'ver_carrito' %}" class="header-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="cart-count">0</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Navigation -->
+    <nav class="navbar navbar-expand-lg main-nav">
+        <div class="container">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'inicio' %}">
+                            <i class="fas fa-home me-2"></i>Inicio
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                            <i class="fas fa-wine-bottle me-2"></i>Productos
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Vinos</a></li>
+                            <li><a class="dropdown-item" href="#">Whisky</a></li>
+                            <li><a class="dropdown-item" href="#">Vodka</a></li>
+                            <li><a class="dropdown-item" href="#">Ron</a></li>
+                            <li><a class="dropdown-item" href="#">Pisco</a></li>
+                            <li><a class="dropdown-item" href="#">Cerveza</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-tags me-2"></i>Ofertas
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-star me-2"></i>Premium
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-info-circle me-2"></i>Nosotros
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-phone me-2"></i>Contacto
+                        </a>
+                    </li>
+                </ul>
+                
+                {% if not user.is_authenticated %}
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'registro' %}">
+                            <i class="fas fa-user-plus me-2"></i>Registro
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">
+                            <i class="fas fa-sign-in-alt me-2"></i>Iniciar Sesión
+                        </a>
+                    </li>
+                </ul>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Messages -->
+    {% if messages %}
+        <div class="container mt-3">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                    <i class="fas fa-check-circle me-2"></i>{{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main class="main-content">
+        {% block content %}
+        <!-- Aquí se insertará el contenido de otras plantillas -->
+        {% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="footer-section">
+                        <h5><i class="fas fa-wine-glass me-2"></i>CAVA REAL</h5>
+                        <p>Tu licorería de confianza con los mejores productos premium y nacionales. Más de 10 años brindando calidad y excelencia.</p>
+                        <div class="social-icons">
+                            <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+                            <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                            <a href="#" class="social-icon"><i class="fab fa-whatsapp"></i></a>
+                            <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <div class="footer-section">
+                        <h5>Enlaces</h5>
+                        <a href="#" class="footer-link">Inicio</a>
+                        <a href="#" class="footer-link">Productos</a>
+                        <a href="#" class="footer-link">Ofertas</a>
+                        <a href="#" class="footer-link">Nosotros</a>
+                        <a href="#" class="footer-link">Contacto</a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="footer-section">
+                        <h5>Categorías</h5>
+                        <a href="#" class="footer-link">Vinos Tintos</a>
+                        <a href="#" class="footer-link">Vinos Blancos</a>
+                        <a href="#" class="footer-link">Whisky Premium</a>
+                        <a href="#" class="footer-link">Pisco Peruano</a>
+                        <a href="#" class="footer-link">Cervezas Artesanales</a>
+                    </div>
+                </div>
+                
+                <div class="col-lg-3 col-md-6 mb-4">
+                    <div class="footer-section">
+                        <h5>Contacto</h5>
+                        <p><i class="fas fa-map-marker-alt me-2"></i>Av. Principal 123, Chiclayo</p>
+                        <p><i class="fas fa-phone me-2"></i>+51 123 456 789</p>
+                        <p><i class="fas fa-envelope me-2"></i>info@cavareal.com</p>
+                        <p><i class="fas fa-clock me-2"></i>Lun - Sáb: 9:00 - 22:00</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 CAVA REAL - Venta exclusiva para mayores de 18 años | Consume con responsabilidad</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script>
+        // Loading animation
+        function showLoading() {
+            document.getElementById('loadingBar').classList.add('active');
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingBar').classList.remove('active');
+        }
+
+        // Show loading on page transitions
+        document.addEventListener('click', function(e) {
+            if (e.target.tagName === 'A' && e.target.href && !e.target.href.includes('#')) {
+                showLoading();
+            }
+        });
+
+        // Hide loading when page loads
+        window.addEventListener('load', function() {
+            hideLoading();
+        });
+
+        // Cart and wishlist functionality (placeholder)
+        document.addEventListener('DOMContentLoaded', function() {
+            // Smooth scroll for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const target = document.querySelector(this.getAttribute('href'));
+                    if (target) {
+                        target.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                });
+            });
+
+            // Search functionality
+            const searchInput = document.querySelector('.search-input');
+            const searchBtn = document.querySelector('.search-btn');
+            
+            searchBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                if (searchInput.value.trim()) {
+                    // Implementar búsqueda
+                    console.log('Buscando:', searchInput.value);
+                    showLoading();
+                }
+            });
+
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    searchBtn.click();
+                }
+            });
+        });
+    </script>
+    
+    {% block scripts %}{% endblock %}
+</body>
+</html>

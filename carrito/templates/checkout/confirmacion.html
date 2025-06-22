@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}¡Pedido Confirmado! - Cava Real{% endblock %}
+
+{% block content %}
+<div class="container text-center mt-5">
+    <div class="alert alert-success" role="alert">
+        <h1 class="display-4">¡Pedido Confirmado!</h1>
+        <p class="lead">Tu pedido ha sido procesado exitosamente.</p>
+        <hr>
+        <p>Número de pedido: <strong>{{ pedido.numero_pedido }}</strong></p>
+        <a href="{% url 'inicio' %}" class="btn btn-primary">Volver al Inicio</a>
+    </div>
+</div>
+{% endblock %}

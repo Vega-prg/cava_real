@@ -1,0 +1,654 @@
+{% extends 'base.html' %}
+
+{% block title %}Catálogo Premium - CAVA REAL{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Catálogo Styles */
+    .catalogo-header {
+        background: linear-gradient(135deg, var(--cava-red), var(--cava-dark-red));
+        color: white;
+        padding: 60px 0;
+        margin-bottom: 40px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .catalogo-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,215,0,0.1)"/><circle cx="80" cy="40" r="1.5" fill="rgba(255,215,0,0.1)"/><circle cx="40" cy="70" r="1" fill="rgba(255,215,0,0.1)"/><circle cx="90" cy="80" r="2.5" fill="rgba(255,215,0,0.1)"/></svg>') repeat;
+        animation: float 20s infinite linear;
+    }
+
+    @keyframes float {
+        0% { transform: translateY(0px); }
+        100% { transform: translateY(-100px); }
+    }
+
+    .catalogo-title {
+        font-size: 3rem;
+        font-weight: 700;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        margin-bottom: 15px;
+        position: relative;
+        z-index: 1;
+    }
+
+    .catalogo-subtitle {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Filtros */
+    .filters-section {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        margin-bottom: 40px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(229, 62, 62, 0.1);
+    }
+
+    .filter-title {
+        color: var(--cava-dark-red);
+        font-weight: 600;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .filter-btn {
+        background: transparent;
+        border: 2px solid var(--cava-red);
+        color: var(--cava-red);
+        padding: 8px 20px;
+        border-radius: 25px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        margin: 5px;
+    }
+
+    .filter-btn:hover,
+    .filter-btn.active {
+        background: var(--cava-red);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(229, 62, 62, 0.3);
+    }
+
+    /* Product Cards */
+    .product-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(229, 62, 62, 0.1);
+        height: 100%;
+        position: relative;
+    }
+
+    .product-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(229, 62, 62, 0.2);
+    }
+
+    .product-image {
+        position: relative;
+        overflow: hidden;
+        height: 250px;
+        background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    }
+
+    .product-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .product-card:hover .product-image img {
+        transform: scale(1.1);
+    }
+
+    .product-badge {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        background: var(--cava-gold);
+        color: var(--cava-dark);
+        padding: 5px 12px;
+        border-radius: 15px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .product-badge.premium {
+        background: linear-gradient(135deg, var(--cava-gold), #ffed4e);
+    }
+
+    .product-badge.oferta {
+        background: linear-gradient(135deg, #e53e3e, #c53030);
+        color: white;
+    }
+
+    .product-actions {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        opacity: 0;
+        transform: translateX(10px);
+        transition: all 0.3s ease;
+    }
+
+    .product-card:hover .product-actions {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    .action-btn {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: white;
+        border: none;
+        color: var(--cava-red);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .action-btn:hover {
+        background: var(--cava-red);
+        color: white;
+        transform: scale(1.1);
+    }
+
+    .product-info {
+        padding: 25px;
+    }
+
+    .product-title {
+        color: var(--cava-dark);
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+        line-height: 1.3;
+    }
+
+    .product-description {
+        color: #666;
+        font-size: 14px;
+        line-height: 1.5;
+        margin-bottom: 15px;
+    }
+
+    .product-details {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding: 10px 0;
+        border-top: 1px solid #eee;
+        border-bottom: 1px solid #eee;
+    }
+
+    .product-price {
+        color: var(--cava-red);
+        font-size: 1.5rem;
+        font-weight: 700;
+    }
+
+    .product-alcohol {
+        background: rgba(229, 62, 62, 0.1);
+        color: var(--cava-red);
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+
+    .product-footer {
+        padding: 0 25px 25px;
+    }
+
+    .btn-product {
+        width: 100%;
+        background: linear-gradient(135deg, var(--cava-red), var(--cava-dark-red));
+        color: white;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 25px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .btn-product:hover {
+        background: linear-gradient(135deg, var(--cava-dark-red), var(--cava-darker-red));
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(229, 62, 62, 0.3);
+        color: white;
+    }
+
+    .btn-outline-product {
+        background: transparent;
+        color: var(--cava-red);
+        border: 2px solid var(--cava-red);
+    }
+
+    .btn-outline-product:hover {
+        background: var(--cava-red);
+        color: white;
+    }
+
+    /* Paginación */
+    .pagination-wrapper {
+        margin-top: 60px;
+        padding: 40px 0;
+    }
+
+    .pagination {
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .page-link {
+        background: white;
+        border: 2px solid var(--cava-red);
+        color: var(--cava-red);
+        padding: 10px 15px;
+        border-radius: 10px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .page-link:hover {
+        background: var(--cava-red);
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(229, 62, 62, 0.3);
+    }
+
+    .page-item.active .page-link {
+        background: linear-gradient(135deg, var(--cava-red), var(--cava-dark-red));
+        border-color: var(--cava-red);
+        color: white;
+        box-shadow: 0 5px 15px rgba(229, 62, 62, 0.3);
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 80px 20px;
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    }
+
+    .empty-state i {
+        font-size: 4rem;
+        color: var(--cava-red);
+        margin-bottom: 20px;
+        opacity: 0.7;
+    }
+
+    .empty-state h3 {
+        color: var(--cava-dark);
+        margin-bottom: 15px;
+    }
+
+    .empty-state p {
+        color: #666;
+        margin-bottom: 30px;
+    }
+
+    /* Stats Bar */
+    .stats-bar {
+        background: white;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 30px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        border-left: 4px solid var(--cava-gold);
+    }
+
+    .stats-info {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .stat-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--cava-dark);
+    }
+
+    .stat-item i {
+        color: var(--cava-red);
+        font-size: 1.2rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .catalogo-title {
+            font-size: 2rem;
+        }
+
+        .filters-section {
+            padding: 20px;
+        }
+
+        .product-info {
+            padding: 20px;
+        }
+
+        .product-footer {
+            padding: 0 20px 20px;
+        }
+
+        .stats-info {
+            flex-direction: column;
+            text-align: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Header del Catálogo -->
+<div class="catalogo-header">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="catalogo-title">
+                    <i class="fas fa-wine-bottle me-3"></i>Catálogo Premium
+                </h1>
+                <p class="catalogo-subtitle">Descubre nuestra selección exclusiva de licores de la más alta calidad</p>
+            </div>
+            <div class="col-lg-4 text-end">
+                <div class="d-flex align-items-center justify-content-end gap-3">
+                    <i class="fas fa-award" style="font-size: 2rem; color: var(--cava-gold);"></i>
+                    <div class="text-start">
+                        <div style="font-size: 1.2rem; font-weight: 600;">+500</div>
+                        <div style="font-size: 0.9rem; opacity: 0.8;">Productos Premium</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <!-- Barra de Estadísticas -->
+    <div class="stats-bar">
+        <div class="stats-info">
+            <div class="stat-item">
+                <i class="fas fa-box"></i>
+                <span><strong>{{ productos|length }}</strong> Productos disponibles</span>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-shipping-fast"></i>
+                <span>Envío <strong>GRATIS</strong> en compras +S/ 100</span>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-medal"></i>
+                <span><strong>Calidad Premium</strong> garantizada</span>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-clock"></i>
+                <span>Entrega en <strong>24-48 horas</strong></span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección de Filtros -->
+    <div class="filters-section">
+        <h4 class="filter-title">
+            <i class="fas fa-filter"></i>
+            Filtrar por Categoría
+        </h4>
+        <div class="text-center">
+            <button class="filter-btn active" data-filter="all">
+                <i class="fas fa-th me-2"></i>Todos
+            </button>
+            <button class="filter-btn" data-filter="vino">
+                <i class="fas fa-wine-glass me-2"></i>Vinos
+            </button>
+            <button class="filter-btn" data-filter="whisky">
+                <i class="fas fa-glass-whiskey me-2"></i>Whisky
+            </button>
+            <button class="filter-btn" data-filter="vodka">
+                <i class="fas fa-cocktail me-2"></i>Vodka
+            </button>
+            <button class="filter-btn" data-filter="ron">
+                <i class="fas fa-glass-martini me-2"></i>Ron
+            </button>
+            <button class="filter-btn" data-filter="pisco">
+                <i class="fas fa-wine-bottle me-2"></i>Pisco
+            </button>
+            <button class="filter-btn" data-filter="cerveza">
+                <i class="fas fa-beer me-2"></i>Cerveza
+            </button>
+        </div>
+    </div>
+    
+    <!-- Grid de Productos -->
+    <div class="row g-4" id="productos-grid">
+        {% for producto in productos %}
+        <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+            <div class="product-card">
+                <div class="product-image">
+                    {% if producto.imagen %}
+                        <img src="{{ producto.imagen.url }}" alt="{{ producto.nombre }}">
+                    {% else %}
+                        <div class="d-flex align-items-center justify-content-center h-100" style="background: linear-gradient(135deg, #f8f9fa, #e9ecef);">
+                            <i class="fas fa-wine-bottle" style="font-size: 3rem; color: var(--cava-red); opacity: 0.3;"></i>
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Badges -->
+                    {% if producto.es_premium %}
+                        <div class="product-badge premium">
+                            <i class="fas fa-crown me-1"></i>Premium
+                        </div>
+                    {% elif producto.en_oferta %}
+                        <div class="product-badge oferta">
+                            <i class="fas fa-fire me-1"></i>Oferta
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Acciones -->
+                    <div class="product-actions">
+                        <button class="action-btn" title="Agregar a favoritos">
+                            <i class="fas fa-heart"></i>
+                        </button>
+                        <button class="action-btn" title="Vista rápida">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="action-btn" title="Comparar">
+                            <i class="fas fa-balance-scale"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="product-info">
+                    <h5 class="product-title">{{ producto.nombre }}</h5>
+                    <p class="product-description">{{ producto.descripcion|truncatechars:80 }}</p>
+                    
+                    <div class="product-details">
+                        <div class="product-price">
+                            S/ {{ producto.precio }}
+                        </div>
+                        {% if producto.graduacion_alcoholica %}
+                        <div class="product-alcohol">
+                            {{ producto.graduacion_alcoholica }}% Alc.
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="product-footer">
+                    <div class="row g-2">
+                        <div class="col-7">
+                            <a href="{% url 'detalle_producto' producto.slug %}" class="btn btn-product">
+                                <i class="fas fa-eye me-2"></i>Ver Detalle
+                            </a>
+                        </div>
+                        <div class="col-5">
+                            <button class="btn btn-outline-product w-100" title="Agregar al carrito">
+                                <i class="fas fa-cart-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="empty-state">
+                <i class="fas fa-wine-bottle"></i>
+                <h3>No hay productos disponibles</h3>
+                <p>Lo sentimos, no encontramos productos en esta categoría en este momento.</p>
+                <a href="{% url 'inicio' %}" class="btn btn-product">
+                    <i class="fas fa-home me-2"></i>Volver al Inicio
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Paginación -->
+    {% if is_paginated %}
+    <div class="pagination-wrapper">
+        <nav aria-label="Navegación de páginas">
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1">
+                        <i class="fas fa-angle-double-left me-2"></i>Primera
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+                        <i class="fas fa-angle-left me-2"></i>Anterior
+                    </a>
+                </li>
+                {% endif %}
+                
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ num }}</span>
+                        </li>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+                        Siguiente<i class="fas fa-angle-right ms-2"></i>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">
+                        Última<i class="fas fa-angle-double-right ms-2"></i>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        
+        <div class="text-center mt-3">
+            <small class="text-muted">
+                Mostrando {{ page_obj.start_index }} - {{ page_obj.end_index }} de {{ page_obj.paginator.count }} productos
+            </small>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Filtrado de productos
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const productCards = document.querySelectorAll('.product-card');
+    
+    filterBtns.forEach(btn => {
+        btn.addEventListener('click', function() {
+            // Remover clase active de todos los botones
+            filterBtns.forEach(b => b.classList.remove('active'));
+            // Agregar clase active al botón clickeado
+            this.classList.add('active');
+            
+            const filter = this.getAttribute('data-filter');
+            
+            productCards.forEach(card => {
+                if (filter === 'all') {
+                    card.closest('.col-xl-3').style.display = 'block';
+                } else {
+                    // Aquí puedes implementar la lógica de filtrado
+                    // basada en las categorías de tus productos
+                    card.closest('.col-xl-3').style.display = 'block';
+                }
+            });
+        });
+    });
+    
+    // Animación de entrada para las cards
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    });
+    
+    productCards.forEach(card => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(30px)';
+        card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        observer.observe(card);
+    });
+    
+    // Botones de acción
+    document.querySelectorAll('.action-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            // Agregar animación de feedback
+            this.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                this.style.transform = 'scale(1)';
+            }, 150);
+        });
+    });
+});
+</script>
+{% endblock %}

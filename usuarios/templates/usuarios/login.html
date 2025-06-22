@@ -1,0 +1,341 @@
+{% extends 'base.html' %}
+
+{% block title %}Iniciar Sesión - CAVA REAL{% endblock %}
+
+{% block extra_css %}
+<style>
+    .login-container {
+        max-width: 450px;
+        margin: 60px auto;
+        background: rgba(189, 30, 30, 0.9);
+        border-radius: 15px;
+        padding: 40px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(10px);
+    }
+
+    .login-logo {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .login-logo h1 {
+        color: white;
+        font-size: 3rem;
+        font-weight: bold;
+        letter-spacing: 2px;
+        position: relative;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .login-logo h1::after {
+        content: '';
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        right: 0;
+        height: 15px;
+        background: repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 10px,
+            rgba(255, 255, 255, 0.3) 10px,
+            rgba(255, 255, 255, 0.3) 15px
+        );
+    }
+
+    .form-title {
+        color: white;
+        font-size: 2rem;
+        text-align: center;
+        margin-bottom: 10px;
+        font-weight: 300;
+    }
+
+    .form-subtitle {
+        color: rgba(255, 255, 255, 0.9);
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 1rem;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        color: white;
+        margin-bottom: 8px;
+        font-weight: 500;
+    }
+
+    .form-control-login {
+        width: 100%;
+        padding: 15px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        background: rgba(255, 255, 255, 0.95);
+        color: #333;
+        transition: all 0.3s ease;
+    }
+
+    .form-control-login:focus {
+        outline: none;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+        transform: translateY(-2px);
+    }
+
+    .form-control-login::placeholder {
+        color: #999;
+    }
+
+    .btn-login {
+        width: 100%;
+        padding: 15px;
+        background: rgba(139, 36, 36, 0.9);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 10px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .btn-login:hover {
+        background: rgba(139, 36, 36, 1);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn-login:active {
+        transform: translateY(0);
+    }
+
+    .links-section {
+        text-align: center;
+        margin-top: 25px;
+    }
+
+    .register-link {
+        margin-bottom: 15px;
+    }
+
+    .register-link a {
+        color: white;
+        text-decoration: none;
+        font-size: 16px;
+        font-weight: 500;
+        padding: 10px 20px;
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        border-radius: 8px;
+        display: inline-block;
+        transition: all 0.3s ease;
+    }
+
+    .register-link a:hover {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: white;
+        transform: translateY(-2px);
+        color: white;
+        text-decoration: none;
+    }
+
+    .forgot-password {
+        display: block;
+        color: rgba(255, 255, 255, 0.8);
+        text-decoration: none;
+        font-size: 14px;
+        margin-top: 15px;
+    }
+
+    .forgot-password:hover {
+        color: white;
+        text-decoration: underline;
+    }
+
+    .error-messages {
+        background: rgba(255, 255, 255, 0.9);
+        color: #d32f2f;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        font-size: 14px;
+        border-left: 4px solid #d32f2f;
+    }
+
+    .error-messages ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .error-messages li {
+        margin-bottom: 5px;
+    }
+
+    .welcome-message {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .input-icon {
+        position: relative;
+    }
+
+    .input-icon::before {
+        content: '';
+        position: absolute;
+        left: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 16px;
+        height: 16px;
+        background-size: contain;
+        opacity: 0.6;
+        z-index: 1;
+    }
+
+    .input-icon.user::before {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23666' viewBox='0 0 24 24'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E");
+    }
+
+    .input-icon.password::before {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23666' viewBox='0 0 24 24'%3E%3Cpath d='M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM12 17c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zM15.1 8H8.9V6c0-1.71 1.39-3.1 3.1-3.1s3.1 1.39 3.1 3.1v2z'/%3E%3C/svg%3E");
+    }
+
+    .input-icon .form-control-login {
+        padding-left: 45px;
+    }
+
+    /* Override base styles for login page */
+    body {
+        background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
+    }
+
+    @media (max-width: 600px) {
+        .login-container {
+            padding: 30px 20px;
+            margin: 20px;
+        }
+
+        .login-logo h1 {
+            font-size: 2.5rem;
+        }
+
+        .form-title {
+            font-size: 1.8rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="login-container">
+        <div class="login-logo">
+            <h1>CAVA REAL</h1>
+        </div>
+
+        <div class="form-title">Iniciar Sesión</div>
+        <div class="form-subtitle">Accede a tu cuenta</div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="welcome-message">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% if form.errors %}
+            <div class="error-messages">
+                <ul>
+                    {% if form.non_field_errors %}
+                        {% for error in form.non_field_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    {% else %}
+                        <li>Por favor, verifica tu nombre de usuario y contraseña.</li>
+                    {% endif %}
+                </ul>
+            </div>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="form-group">
+                <div class="input-icon user">
+                    <input type="text" 
+                           name="username" 
+                           class="form-control-login" 
+                           placeholder="Nombre de usuario"
+                           value="{{ form.username.value|default:'' }}"
+                           required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="input-icon password">
+                    <input type="password" 
+                           name="password" 
+                           class="form-control-login" 
+                           placeholder="Contraseña"
+                           required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-login">INICIAR SESIÓN</button>
+
+            <div class="links-section">
+                <div class="register-link">
+                    <a href="{% url 'registro' %}">¿No tienes cuenta? Regístrate</a>
+                </div>
+                
+                <a href="#" class="forgot-password">¿Olvidaste tu contraseña?</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Agregar animación de entrada
+    document.addEventListener('DOMContentLoaded', function() {
+        const container = document.querySelector('.login-container');
+        container.style.opacity = '0';
+        container.style.transform = 'translateY(20px)';
+        
+        setTimeout(() => {
+            container.style.transition = 'all 0.5s ease';
+            container.style.opacity = '1';
+            container.style.transform = 'translateY(0)';
+        }, 100);
+
+        // Efecto de focus en inputs
+        const inputs = document.querySelectorAll('.form-control-login');
+        inputs.forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'scale(1.02)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'scale(1)';
+            });
+        });
+    });
+</script>
+{% endblock %}

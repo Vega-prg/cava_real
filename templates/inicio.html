@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Inicio - Cava Real{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-8 mx-auto text-center">
+            <!-- Banner principal -->
+            <div class="p-5 mb-4 bg-light rounded-3">
+                <h1 class="display-4">🍷 Bienvenido a Cava Real</h1>
+                <p class="lead">Los mejores licores para los paladares más exigentes.</p>
+                <hr class="my-4">
+                {% if user.is_authenticated %}
+                    <p>Hola, <strong>{{ user.nombre }}</strong>. ¿Qué deseas explorar hoy?</p>
+                    <a href="{% url 'lista_productos' %}" class="btn btn-primary btn-lg">Ver Catálogo</a>
+                {% else %}
+                    <p>Descubre nuestras exclusivas selecciones. Regístrate o inicia sesión.</p>
+                    <a href="{% url 'registro' %}" class="btn btn-primary btn-lg me-2">Regístrate</a>
+                    <a href="{% url 'login' %}" class="btn btn-outline-primary btn-lg">Iniciar Sesión</a>
+                {% endif %}
+            </div>
+
+            <!-- Destacados -->
+            <h2 class="mt-5">Licores Destacados</h2>
+            <div class="row mt-4">
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <img src="https://via.placeholder.com/300x200?text=Whisky" class="card-img-top" alt="Whisky">
+                        <div class="card-body">
+                            <h5 class="card-title">Colección Whisky</h5>
+                            <p class="card-text">Single malts y blends premium.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <img src="https://via.placeholder.com/300x200?text=Vino" class="card-img-top" alt="Vino">
+                        <div class="card-body">
+                            <h5 class="card-title">Vinos Selectos</h5>
+                            <p class="card-text">Denominaciones de origen exclusivas.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="card h-100">
+                        <img src="https://via.placeholder.com/300x200?text=Coctel" class="card-img-top" alt="Coctel">
+                        <div class="card-body">
+                            <h5 class="card-title">Kits para Cocteles</h5>
+                            <p class="card-text">Todo lo que necesitas para mixología.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

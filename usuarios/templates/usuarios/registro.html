@@ -1,0 +1,420 @@
+{% extends 'base.html' %}
+
+{% block title %}Registro - CAVA REAL{% endblock %}
+
+{% block extra_css %}
+<style>
+    .registro-container {
+        background: rgba(189, 30, 30, 0.9);
+        border-radius: 15px;
+        padding: 40px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        width: 100%;
+        max-width: 500px;
+        backdrop-filter: blur(10px);
+        margin: 0 auto;
+    }
+
+    .registro-logo {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .registro-logo h1 {
+        color: white;
+        font-size: 3rem;
+        font-weight: bold;
+        letter-spacing: 2px;
+        position: relative;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .registro-logo h1::after {
+        content: '';
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        right: 0;
+        height: 15px;
+        background: repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 10px,
+            rgba(255, 255, 255, 0.3) 10px,
+            rgba(255, 255, 255, 0.3) 15px
+        );
+    }
+
+    .form-title {
+        color: white;
+        font-size: 2rem;
+        text-align: center;
+        margin-bottom: 10px;
+        font-weight: 300;
+    }
+
+    .form-subtitle {
+        color: rgba(255, 255, 255, 0.9);
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 1rem;
+    }
+
+    .form-row {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        flex: 1;
+        margin-bottom: 20px;
+    }
+
+    .form-group.full-width {
+        flex: none;
+        width: 100%;
+    }
+
+    .form-group label {
+        display: block;
+        color: white;
+        margin-bottom: 8px;
+        font-weight: 500;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 12px 15px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        background: rgba(255, 255, 255, 0.95);
+        color: #333;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus {
+        outline: none;
+        background: white;
+        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+    }
+
+    .form-control::placeholder {
+        color: #999;
+    }
+
+    .date-row {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+    }
+
+    .date-group {
+        flex: 1;
+    }
+
+    .gender-group {
+        margin-bottom: 25px;
+    }
+
+    .gender-options {
+        display: flex;
+        gap: 15px;
+        margin-top: 10px;
+    }
+
+    .gender-option {
+        flex: 1;
+        position: relative;
+    }
+
+    .gender-option input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+        width: 100%;
+        height: 100%;
+        cursor: pointer;
+    }
+
+    .gender-option label {
+        display: block;
+        padding: 12px 15px;
+        background: rgba(255, 255, 255, 0.95);
+        color: #333;
+        border-radius: 8px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .gender-option input[type="radio"]:checked + label {
+        background: white;
+        box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.5);
+        transform: translateY(-2px);
+    }
+
+    .gender-option label::after {
+        content: '';
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 16px;
+        height: 16px;
+        border: 2px solid #ccc;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+    }
+
+    .gender-option input[type="radio"]:checked + label::after {
+        border-color: #e53e3e;
+        background: #e53e3e;
+        box-shadow: inset 0 0 0 3px white;
+    }
+
+    .btn-register {
+        width: 100%;
+        padding: 15px;
+        background: rgba(139, 36, 36, 0.9);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 18px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 10px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .btn-register:hover {
+        background: rgba(139, 36, 36, 1);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .login-link {
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    .login-link a {
+        color: white;
+        text-decoration: none;
+        font-size: 14px;
+        opacity: 0.9;
+    }
+
+    .login-link a:hover {
+        opacity: 1;
+        text-decoration: underline;
+    }
+
+    .terms-text {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 12px;
+        text-align: center;
+        margin-top: 15px;
+        line-height: 1.4;
+    }
+
+    .error-messages {
+        background: rgba(255, 255, 255, 0.9);
+        color: #d32f2f;
+        padding: 10px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        font-size: 14px;
+    }
+
+    .error-messages ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .error-messages li {
+        margin-bottom: 5px;
+    }
+
+    /* Fondo específico para la página de registro */
+    body {
+        background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%) !important;
+        min-height: 100vh;
+    }
+    
+    .main-content {
+        background: transparent;
+        min-height: calc(100vh - 400px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+    
+    .footer {
+        margin-top: 0 !important;
+    }
+
+    @media (max-width: 600px) {
+        .registro-container {
+            padding: 30px 20px;
+            margin: 10px;
+        }
+
+        .registro-logo h1 {
+            font-size: 2.5rem;
+        }
+
+        .form-row {
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .date-row {
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .gender-options {
+            flex-direction: column;
+            gap: 10px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="registro-container">
+    <div class="registro-logo">
+        <h1>CAVA REAL</h1>
+    </div>
+
+    <div class="form-title">Crea una cuenta</div>
+    <div class="form-subtitle">Es rápido y fácil.</div>
+
+    {% if form.errors %}
+        <div class="error-messages">
+            <ul>
+                {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                        <li>{{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+        
+        <div class="form-row">
+            <div class="form-group">
+                <input type="text" 
+                       name="nombre" 
+                       class="form-control" 
+                       placeholder="Nombre"
+                       value="{{ form.nombre.value|default:'' }}"
+                       required>
+            </div>
+            <div class="form-group">
+                <input type="text" 
+                       name="apellido" 
+                       class="form-control" 
+                       placeholder="Apellido"
+                       value="{{ form.apellido.value|default:'' }}"
+                       required>
+            </div>
+        </div>
+
+        <div class="form-group full-width">
+            <input type="text" 
+                   name="username" 
+                   class="form-control" 
+                   placeholder="Nombre de usuario"
+                   value="{{ form.username.value|default:'' }}"
+                   required>
+        </div>
+
+        <div class="form-group full-width">
+            <label style="color: white; margin-bottom: 10px;">Fecha de nacimiento</label>
+            <input type="date" 
+                   name="fecha_nacimiento" 
+                   class="form-control"
+                   value="{{ form.fecha_nacimiento.value|default:'' }}"
+                   required>
+        </div>
+
+        <div class="gender-group">
+            <label style="color: white; margin-bottom: 10px;">Género</label>
+            <div class="gender-options">
+                <div class="gender-option">
+                    <input type="radio" 
+                           name="genero" 
+                           value="F" 
+                           id="mujer"
+                           {% if form.genero.value == 'F' %}checked{% endif %}>
+                    <label for="mujer">Mujer</label>
+                </div>
+                <div class="gender-option">
+                    <input type="radio" 
+                           name="genero" 
+                           value="M" 
+                           id="hombre"
+                           {% if form.genero.value == 'M' %}checked{% endif %}>
+                    <label for="hombre">Hombre</label>
+                </div>
+                <div class="gender-option">
+                    <input type="radio" 
+                           name="genero" 
+                           value="O" 
+                           id="otro"
+                           {% if form.genero.value == 'O' %}checked{% endif %}>
+                    <label for="otro">Otro</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group full-width">
+            <input type="email" 
+                   name="email" 
+                   class="form-control" 
+                   placeholder="Correo Electrónico"
+                   value="{{ form.email.value|default:'' }}"
+                   required>
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <input type="password" 
+                       name="password1" 
+                       class="form-control" 
+                       placeholder="Contraseña"
+                       required>
+            </div>
+            <div class="form-group">
+                <input type="password" 
+                       name="password2" 
+                       class="form-control" 
+                       placeholder="Confirmar contraseña"
+                       required>
+            </div>
+        </div>
+
+        <div class="terms-text">
+            Al hacer clic en 'Registrarte', aceptas nuestras Condiciones, la Política de privacidad y la Política de cookies. Es posible que te enviemos notificaciones por SMS, que puedes desactivar cuando quieras.
+        </div>
+
+        <button type="submit" class="btn-register">REGISTRARME</button>
+
+        <div class="login-link">
+            <a href="{% url 'login' %}">¿Ya eres un usuario nuestro?</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Selecciona una dirección</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.direccion }}
+        
+        <div class="mt-4">
+            {% if puede_agregar_direccion %}
+            <a href="{% url 'agregar_direccion' %}?next={% url 'checkout_direccion' %}" class="btn btn-outline-secondary">
+                + Agregar Nueva Dirección
+            </a>
+            {% endif %}
+            <button type="submit" class="btn btn-primary float-end">Continuar al Pago</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

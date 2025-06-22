@@ -1,0 +1,870 @@
+{% extends 'base.html' %}
+
+{% block title %}Checkout - Cava Real{% endblock %}
+
+{% block extra_css %}
+<style>
+    .checkout-container {
+        background: #f8f9fa;
+        min-height: 100vh;
+        padding: 40px 0;
+    }
+
+    .checkout-header {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        margin-bottom: 30px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        border-top: 4px solid var(--cava-red);
+    }
+
+    .checkout-title {
+        color: var(--cava-dark);
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .breadcrumb-custom {
+        background: rgba(255, 255, 255, 0.9);
+        padding: 15px 25px;
+        border-radius: 15px;
+        margin-bottom: 30px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .breadcrumb-custom .breadcrumb-item a {
+        color: var(--cava-red);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s ease;
+    }
+
+    .breadcrumb-custom .breadcrumb-item a:hover {
+        color: var(--cava-dark-red);
+    }
+
+    .breadcrumb-custom .breadcrumb-item.active {
+        color: var(--cava-dark);
+        font-weight: 600;
+    }
+
+    .checkout-content {
+        display: grid;
+        grid-template-columns: 1fr 400px;
+        gap: 30px;
+        align-items: start;
+    }
+
+    .checkout-sections {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+    }
+
+    .checkout-section {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .section-header {
+        background: linear-gradient(135deg, var(--cava-red), var(--cava-dark-red));
+        color: white;
+        padding: 20px 25px;
+        font-size: 1.3rem;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .section-number {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1.1rem;
+    }
+
+    .section-body {
+        padding: 25px;
+    }
+
+    /* Sección de Dirección */
+    .address-option {
+        border: 2px solid #e9ecef;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 15px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+    }
+
+    .address-option:hover {
+        border-color: var(--cava-red);
+        background: #fafafa;
+    }
+
+    .address-option.selected {
+        border-color: var(--cava-red);
+        background: linear-gradient(135deg, rgba(229, 62, 62, 0.05), rgba(229, 62, 62, 0.1));
+    }
+
+    .address-option input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .address-option .custom-radio {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        width: 20px;
+        height: 20px;
+        border: 2px solid #ddd;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+    }
+
+    .address-option input[type="radio"]:checked + .custom-radio {
+        border-color: var(--cava-red);
+        background: var(--cava-red);
+    }
+
+    .address-option input[type="radio"]:checked + .custom-radio:after {
+        content: '';
+        width: 8px;
+        height: 8px;
+        background: white;
+        border-radius: 50%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .address-details {
+        padding-right: 40px;
+    }
+
+    .address-name {
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: var(--cava-dark);
+        margin-bottom: 8px;
+    }
+
+    .address-info {
+        color: #666;
+        line-height: 1.5;
+        margin-bottom: 5px;
+    }
+
+    .address-phone {
+        color: var(--cava-red);
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    /* Sección de Pago */
+    .payment-option {
+        border: 2px solid #e9ecef;
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 15px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .payment-option:hover {
+        border-color: var(--cava-red);
+        background: #fafafa;
+    }
+
+    .payment-option.selected {
+        border-color: var(--cava-red);
+        background: linear-gradient(135deg, rgba(229, 62, 62, 0.05), rgba(229, 62, 62, 0.1));
+    }
+
+    .payment-option input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+    .payment-option .custom-radio {
+        width: 20px;
+        height: 20px;
+        border: 2px solid #ddd;
+        border-radius: 50%;
+        transition: all 0.3s ease;
+        flex-shrink: 0;
+    }
+
+    .payment-option input[type="radio"]:checked + .custom-radio {
+        border-color: var(--cava-red);
+        background: var(--cava-red);
+    }
+
+    .payment-option input[type="radio"]:checked + .custom-radio:after {
+        content: '';
+        width: 8px;
+        height: 8px;
+        background: white;
+        border-radius: 50%;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .payment-icon {
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, var(--cava-red), var(--cava-dark-red));
+        color: white;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.2rem;
+    }
+
+    .payment-details {
+        flex: 1;
+    }
+
+    .payment-name {
+        font-weight: 600;
+        color: var(--cava-dark);
+        margin-bottom: 3px;
+    }
+
+    .payment-info {
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    /* Sección de Productos */
+    .cart-item-checkout {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 15px 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+
+    .cart-item-checkout:last-child {
+        border-bottom: none;
+    }
+
+    .item-image-checkout {
+        width: 60px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .item-details-checkout {
+        flex: 1;
+    }
+
+    .item-name-checkout {
+        font-weight: 600;
+        color: var(--cava-dark);
+        margin-bottom: 3px;
+        font-size: 0.95rem;
+    }
+
+    .item-quantity-checkout {
+        color: #666;
+        font-size: 0.85rem;
+    }
+
+    .item-price-checkout {
+        font-weight: 600;
+        color: var(--cava-red);
+        font-size: 1rem;
+    }
+
+    /* Botones de Acción */
+    .action-btn {
+        background: white;
+        color: var(--cava-red);
+        border: 2px solid var(--cava-red);
+        padding: 12px 20px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 15px;
+    }
+
+    .action-btn:hover {
+        background: var(--cava-red);
+        color: white;
+        transform: translateY(-1px);
+    }
+
+    .alert-custom {
+        background: linear-gradient(135deg, #fff3cd, #ffeeba);
+        color: #856404;
+        padding: 15px 20px;
+        border-radius: 15px;
+        border: 2px solid #ffc107;
+        font-weight: 500;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    /* Resumen del Pedido */
+    .order-summary {
+        background: white;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        position: sticky;
+        top: 100px;
+        height: fit-content;
+    }
+
+    .summary-title {
+        color: var(--cava-dark);
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 20px;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #f0f0f0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        font-size: 1rem;
+    }
+
+    .summary-row.total {
+        border-top: 2px solid #f0f0f0;
+        margin-top: 15px;
+        padding-top: 20px;
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: var(--cava-dark);
+    }
+
+    .summary-value {
+        font-weight: 600;
+        color: var(--cava-red);
+    }
+
+    .summary-value.total {
+        font-size: 1.5rem;
+        color: var(--cava-dark);
+    }
+
+    .confirm-btn {
+        width: 100%;
+        background: linear-gradient(135deg, var(--cava-red), var(--cava-dark-red));
+        color: white;
+        border: none;
+        padding: 18px;
+        border-radius: 25px;
+        font-size: 1.2rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(229, 62, 62, 0.3);
+        margin-top: 25px;
+        cursor: pointer;
+    }
+
+    .confirm-btn:hover:not(:disabled) {
+        background: linear-gradient(135deg, var(--cava-dark-red), var(--cava-darker-red));
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(229, 62, 62, 0.4);
+    }
+
+    .confirm-btn:disabled {
+        background: #6c757d;
+        cursor: not-allowed;
+        opacity: 0.6;
+        transform: none;
+        box-shadow: none;
+    }
+
+    /* Información de Seguridad */
+    .security-info {
+        margin-top: 25px;
+        padding-top: 20px;
+        border-top: 1px solid #f0f0f0;
+    }
+
+    .security-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: #666;
+        font-size: 0.9rem;
+        margin-bottom: 10px;
+    }
+
+    .security-item:last-child {
+        margin-bottom: 0;
+    }
+
+    .security-item i {
+        color: var(--cava-red);
+        width: 16px;
+    }
+
+    .trust-badges {
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid #f0f0f0;
+        text-align: center;
+    }
+
+    .trust-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #f8f9fa;
+        padding: 8px 15px;
+        border-radius: 15px;
+        margin: 5px;
+        font-size: 0.8rem;
+        color: #666;
+        font-weight: 500;
+    }
+
+    .trust-badge i {
+        color: var(--cava-red);
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+        .checkout-content {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .order-summary {
+            position: static;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .checkout-container {
+            padding: 20px 0;
+        }
+
+        .checkout-header {
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .checkout-title {
+            font-size: 2rem;
+        }
+
+        .section-body {
+            padding: 20px;
+        }
+
+        .order-summary {
+            padding: 20px;
+        }
+
+        .address-details {
+            padding-right: 20px;
+        }
+    }
+
+    /* Mensajes */
+    .success-message {
+        background: linear-gradient(135deg, #d4edda, #c3e6cb);
+        color: #155724;
+        padding: 15px 20px;
+        border-radius: 15px;
+        margin-bottom: 20px;
+        border: 2px solid #28a745;
+        font-weight: 500;
+        text-align: center;
+    }
+
+    .error-message {
+        background: linear-gradient(135deg, #f8d7da, #f5c6cb);
+        color: #721c24;
+        padding: 15px 20px;
+        border-radius: 15px;
+        margin-bottom: 20px;
+        border: 2px solid #dc3545;
+        font-weight: 500;
+        text-align: center;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="checkout-container">
+    <div class="container">
+        <!-- Breadcrumbs -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb breadcrumb-custom">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'inicio' %}">
+                        <i class="fas fa-home me-1"></i>Inicio
+                    </a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'lista_productos' %}">
+                        <i class="fas fa-wine-bottle me-1"></i>Productos
+                    </a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{% url 'ver_carrito' %}">
+                        <i class="fas fa-shopping-cart me-1"></i>Carrito
+                    </a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Checkout</li>
+            </ol>
+        </nav>
+
+        <!-- Mensajes -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="{% if message.tags == 'success' %}success-message{% else %}error-message{% endif %}">
+                    <i class="fas fa-{% if message.tags == 'success' %}check-circle{% else %}exclamation-triangle{% endif %} me-2"></i>
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Header del Checkout -->
+        <div class="checkout-header">
+            <h1 class="checkout-title">
+                <i class="fas fa-credit-card"></i>
+                Finalizar Compra
+            </h1>
+        </div>
+
+        <form method="post" id="checkout-form">
+            {% csrf_token %}
+            
+            <div class="checkout-content">
+                <!-- Secciones del Checkout -->
+                <div class="checkout-sections">
+                    
+                    <!-- Sección 1: Dirección de Envío -->
+                    <div class="checkout-section">
+                        <div class="section-header">
+                            <span class="section-number">1</span>
+                            <i class="fas fa-map-marker-alt"></i>
+                            Dirección de Envío
+                        </div>
+                        <div class="section-body">
+                            {% if direcciones %}
+                                {% for direccion in direcciones %}
+                                <div class="address-option {% if direccion.default or direcciones.count == 1 %}selected{% endif %}">
+                                    <input type="radio" 
+                                           name="direccion_id" 
+                                           id="dir-{{ direccion.id }}" 
+                                           value="{{ direccion.id }}"
+                                           {% if direccion.default or direcciones.count == 1 %}checked{% endif %}
+                                           required>
+                                    <div class="custom-radio"></div>
+                                    <div class="address-details">
+                                        <div class="address-name">{{ direccion.direccion }}</div>
+                                        <div class="address-info">
+                                            {{ direccion.ciudad }}, {{ direccion.provincia }} ({{ direccion.codigo_postal }})
+                                        </div>
+                                        <div class="address-phone">
+                                            <i class="fas fa-phone"></i>
+                                            {{ direccion.telefono }}
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="alert-custom">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    No tienes direcciones guardadas.
+                                </div>
+                            {% endif %}
+                            
+                            <a href="{% url 'agregar_direccion' %}?next={% url 'checkout_unificado' %}" 
+                               class="action-btn">
+                                <i class="fas fa-plus"></i>
+                                Agregar Nueva Dirección
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Sección 2: Método de Pago -->
+                    <div class="checkout-section">
+                        <div class="section-header">
+                            <span class="section-number">2</span>
+                            <i class="fas fa-credit-card"></i>
+                            Método de Pago
+                        </div>
+                        <div class="section-body">
+                            {% if metodos_pago %}
+                                {% for metodo in metodos_pago %}
+                                <div class="payment-option {% if metodo.default or metodos_pago.count == 1 %}selected{% endif %}">
+                                    <input type="radio" 
+                                           name="metodo_pago_id" 
+                                           id="metodo-{{ metodo.id }}" 
+                                           value="{{ metodo.id }}"
+                                           {% if metodo.default or metodos_pago.count == 1 %}checked{% endif %}
+                                           required>
+                                    <div class="custom-radio"></div>
+                                    <div class="payment-icon">
+                                        <i class="fas fa-{% if metodo.tipo == 'visa' %}cc-visa{% elif metodo.tipo == 'mastercard' %}cc-mastercard{% else %}credit-card{% endif %}"></i>
+                                    </div>
+                                    <div class="payment-details">
+                                        <div class="payment-name">{{ metodo.get_tipo_display }}</div>
+                                        <div class="payment-info">
+                                            {% if metodo.ultimos_digitos %}•••• {{ metodo.ultimos_digitos }}{% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="alert-custom">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    No tienes métodos de pago guardados.
+                                </div>
+                            {% endif %}
+                            
+                            <a href="{% url 'agregar_tarjeta' %}?next={% url 'checkout_unificado' %}" 
+                               class="action-btn">
+                                <i class="fas fa-plus"></i>
+                                Agregar Nuevo Método
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Sección 3: Productos del Pedido -->
+                    <div class="checkout-section">
+                        <div class="section-header">
+                            <span class="section-number">3</span>
+                            <i class="fas fa-box"></i>
+                            Productos del Pedido ({{ carrito.items.all|length }})
+                        </div>
+                        <div class="section-body">
+                            {% for item in carrito.items.all %}
+                            <div class="cart-item-checkout">
+                                <img src="{{ item.producto.imagen.url }}" 
+                                     class="item-image-checkout" 
+                                     alt="{{ item.producto.nombre }}">
+                                
+                                <div class="item-details-checkout">
+                                    <div class="item-name-checkout">{{ item.producto.nombre }}</div>
+                                    <div class="item-quantity-checkout">Cantidad: {{ item.cantidad }}</div>
+                                </div>
+                                
+                                <div class="item-price-checkout">S/ {{ item.subtotal }}</div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Resumen del Pedido -->
+                <div class="order-summary">
+                    <h3 class="summary-title">
+                        <i class="fas fa-receipt"></i>
+                        Resumen del Pedido
+                    </h3>
+
+                    <div class="summary-row">
+                        <span>Subtotal ({{ carrito.items.all|length }} producto{{ carrito.items.all|length|pluralize }}):</span>
+                        <span class="summary-value">S/ {{ carrito.total }}</span>
+                    </div>
+
+                    <div class="summary-row">
+                        <span>Envío:</span>
+                        <span class="summary-value">Gratis</span>
+                    </div>
+
+                    <div class="summary-row">
+                        <span>Descuentos:</span>
+                        <span class="summary-value">S/ 0.00</span>
+                    </div>
+
+                    <div class="summary-row total">
+                        <span>Total:</span>
+                        <span class="summary-value total">S/ {{ carrito.total }}</span>
+                    </div>
+
+                    <button type="submit" class="confirm-btn" 
+                            {% if not direcciones or not metodos_pago %}disabled{% endif %}>
+                        <i class="fas fa-lock me-2"></i>
+                        Confirmar Pedido
+                    </button>
+
+                    <!-- Información de Seguridad -->
+                    <div class="security-info">
+                        <div class="security-item">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Compra 100% segura y protegida</span>
+                        </div>
+                        <div class="security-item">
+                            <i class="fas fa-lock"></i>
+                            <span>Datos encriptados con SSL</span>
+                        </div>
+                        <div class="security-item">
+                            <i class="fas fa-undo"></i>
+                            <span>Política de devoluciones fáciles</span>
+                        </div>
+                        <div class="security-item">
+                            <i class="fas fa-headset"></i>
+                            <span>Soporte 24/7</span>
+                        </div>
+                    </div>
+
+                    <!-- Badges de Confianza -->
+                    <div class="trust-badges">
+                        <div class="trust-badge">
+                            <i class="fab fa-cc-visa"></i>
+                            <span>Visa</span>
+                        </div>
+                        <div class="trust-badge">
+                            <i class="fab fa-cc-mastercard"></i>
+                            <span>Mastercard</span>
+                        </div>
+                        <div class="trust-badge">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>SSL</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Manejo de selección de direcciones
+    const addressOptions = document.querySelectorAll('.address-option');
+    const addressRadios = document.querySelectorAll('input[name="direccion_id"]');
+
+    addressOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            // Remover selección previa
+            addressOptions.forEach(opt => opt.classList.remove('selected'));
+            
+            // Agregar selección actual
+            this.classList.add('selected');
+            
+            // Marcar radio button
+            const radio = this.querySelector('input[type="radio"]');
+            radio.checked = true;
+        });
+    });
+
+    // Manejo de selección de métodos de pago
+    const paymentOptions = document.querySelectorAll('.payment-option');
+    const paymentRadios = document.querySelectorAll('input[name="metodo_pago_id"]');
+
+    paymentOptions.forEach(option => {
+        option.addEventListener('click', function() {
+            // Remover selección previa
+            paymentOptions.forEach(opt => opt.classList.remove('selected'));
+            
+            // Agregar selección actual
+            this.classList.add('selected');
+            
+            // Marcar radio button
+            const radio = this.querySelector('input[type="radio"]');
+            radio.checked = true;
+        });
+    });
+
+    // Validación del formulario
+    document.getElementById('checkout-form').addEventListener('submit', function(e) {
+        const direccionSeleccionada = document.querySelector('input[name="direccion_id"]:checked');
+        const metodoSeleccionado = document.querySelector('input[name="metodo_pago_id"]:checked');
+        
+        if (!direccionSeleccionada || !metodoSeleccionado) {
+            e.preventDefault();
+            
+            let mensaje = 'Por favor completa los siguientes campos:';
+            if (!direccionSeleccionada) mensaje += '\n- Selecciona una dirección de envío';
+            if (!metodoSeleccionado) mensaje += '\n- Selecciona un método de pago';
+            
+            alert(mensaje);
+            return false;
+        }
+
+        // Confirmación final
+        const confirmacion = confirm('¿Estás seguro de que quieres confirmar este pedido?');
+        if (!confirmacion) {
+            e.preventDefault();
+            return false;
+        }
+
+        // Deshabilitar botón para evitar doble envío
+        const submitBtn = this.querySelector('.confirm-btn');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Procesando...';
+    });
+
+    // Actualizar estado del botón según selecciones
+    function updateSubmitButton() {
+        const direccionSeleccionada = document.querySelector('input[name="direccion_id"]:checked');
+        const metodoSeleccionado = document.querySelector('input[name="metodo_pago_id"]:checked');
+        const submitBtn = document.querySelector('.confirm-btn');
+        
+        if (direccionSeleccionada && metodoSeleccionado) {
+            submitBtn.disabled = false;
+        } else {
+            submitBtn.disabled = true;
+        }
+    }
+
+    // Escuchar cambios en los radio buttons
+    addressRadios.forEach(radio => {
+        radio.addEventListener('change', updateSubmitButton);
+    });
+
+    paymentRadios.forEach(radio => {
+        radio.addEventListener('change', updateSubmitButton);
+    });
+
+    // Estado inicial
+    updateSubmitButton();
+});
+</script>
+{% endblock %}

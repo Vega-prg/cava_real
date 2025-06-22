@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Agregar Dirección - Cava Real{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Agregar Nueva Dirección</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Guardar Dirección</button>
+        <a href="{{ request.GET.next }}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1>Selecciona un método de pago</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.metodo_pago }}
+        
+        <div class="mt-4">
+            {% if puede_agregar_tarjeta %}
+            <a href="{% url 'agregar_tarjeta' %}?next={% url 'checkout_pago' %}" class="btn btn-outline-secondary">
+                + Agregar Nueva Tarjeta
+            </a>
+            {% endif %}
+            <button type="submit" class="btn btn-primary float-end">Confirmar Pedido</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

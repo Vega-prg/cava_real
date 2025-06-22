@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% block title %}Agregar Tarjeta - Cava Real{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Agregar Método de Pago</h1>
+    <form method="post">
+        {% csrf_token %}
+        
+        <!-- Campo tipo (Tarjeta/Efectivo) -->
+        <div class="mb-3">
+            <label class="form-label">Tipo de Pago</label>
+            {{ form.tipo }}
+        </div>
+        
+        <!-- Campos condicionales para tarjeta -->
+        <div id="tarjeta-fields" class="mb-3 {% if form.tipo.value != 'TARJETA' %}d-none{% endif %}">
+            <div class="mb-3">
+                <label class="form-label">Número de Tarjeta</label>
+                <input type="text" class="form-control" placeholder="4242 4242 4242 4242" maxlength="16">
+            </div>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Nombre del Titular</label>
+                    <input type="text" class="form-control">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">MM/AA</label>
+                    <input type="text" class="form-control" placeholder="12/25">
+                </div>
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">CVV</label>
+                    <input type="text" class="form-control" placeholder="123">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Checkbox para método predeterminado -->
+        <div class="mb-3 form-check">
+            {{ form.default }}
+            <label class="form-check-label">Usar como método de pago principal</label>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Guardar Método</button>
+        <a href="{{ request.GET.next }}" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>
+
+<script>
+// Mostrar campos de tarjeta solo cuando se selecciona "TARJETA"
+document.getElementById("id_tipo").addEventListener("change", function() {
+    const tarjetaFields = document.getElementById("tarjeta-fields");
+    tarjetaFields.classList.toggle("d-none", this.value !== "TARJETA");
+});
+</script>
+{% endblock %}
